@@ -1,0 +1,12 @@
+@base <http://example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rel: <http://www.perceive.net/schemas/relationship/> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix aws: <http://purl.oclc.org/NET/ssnx/meteo/aws#> .
+@prefix sdm: <http://oeg-upm.net/onto/sensordemo/> .
+@prefix : <http://oeg-upm.net/onto/sensordemo/> .
+
+<http://oeg-upm.net/onto/sensordemo/sens1> a aws:TemperatureSensor.
+
