@@ -201,27 +201,3 @@ class SsnStream(cqels:CqelsReasoner,uri:String,rate:Int) extends CqelsStream(cqe
     //stream(obs,OmOwl.timestamp ,System.currentTimeMillis.toString)))))
   }
 }
-
-object CqelsDemo {
-  type TripleList = java.util.List[Triple]
-  val exStreams="http://example.org/streams/"
-  
-    def main(args:Array[String]):Unit={
-    val cqels=new CqelsReasoner
-    val system=ActorSystem.create("cqelsSystem")
-    val ssw=system.actorOf(Props(new SsnStream(cqels,exStreams+"s1",1)))
-
-    val listener=new ConstructListener(cqels.engine ){
-      var count=0                 
-      def update(triples:TripleList):Unit={
-        count+=triples.size
-      } 
-    }
-    ssw ! StartStream
-    //cqels.registerQuery(ssnQuery2, listener,false)
-    Thread.sleep(20000)
-    println("input: "+cqels.inputCount )
-    println("output: "+listener.count)
-    cqels.stop
-  }
-}
