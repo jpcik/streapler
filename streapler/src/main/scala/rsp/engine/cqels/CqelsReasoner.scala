@@ -22,8 +22,8 @@ case class StreamTriple(uri:String,s:String,p:String,o:String)
 
 class CqelsReasoner{
   var inputCount=0
-  val engine= new ExecContext("",false)
-  engine.loadDefaultDataset("file:///C:/Users/calbimon/git/rsp-engine/rsp-reasoner/src/test/resources/static.ttl")
+  val engine= new ExecContext("./",false)
+  //engine.loadDefaultDataset("file:///C:/Users/calbimon/git/rsp-engine/rsp-reasoner/src/test/resources/static.ttl")
   import rsp.data.{Triple=>RdfTriple}
   import rsp.util.JenaTools._
   

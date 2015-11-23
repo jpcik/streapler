@@ -111,7 +111,6 @@ class CqelsReasonerTest extends FlatSpec with Matchers  {
     val cqels=new CqelsReasoner
     val system=ActorSystem.create("cqelsSystem")
     val ssw=system.actorOf(Props(new SsnStream(cqels,exStreams+"s1",1)))
-    ssw ! StartStream
     //val ssw2=system.actorOf(Props(new SsnStream(cqels,pref+"s2")))
     //ssw2 ! StartStream
     //val ssw3=system.actorOf(Props(new SensorWebStream(cqels,pref+"s3")))
@@ -126,8 +125,9 @@ class CqelsReasonerTest extends FlatSpec with Matchers  {
         }*/
       } 
     }
+    ssw ! StartStream
     //cqels.registerQuery(ssnQuery2, listener,false)
-    Thread.sleep(10000)
+    Thread.sleep(20000)
     println("input: "+cqels.inputCount )
     println("output: "+listener.count)
     cqels.stop
@@ -199,5 +199,29 @@ class SsnStream(cqels:CqelsReasoner,uri:String,rate:Int) extends CqelsStream(cqe
     stream(obs,Ssn.observedBy,sens)
     stream(sens,RDF.`type`.toString,"http://purl.oclc.org/NET/ssnx/meteo/aws#Thermistor")    
     //stream(obs,OmOwl.timestamp ,System.currentTimeMillis.toString)))))
+  }
+}
+
+object CqelsDemo {
+  type TripleList = java.util.List[Triple]
+  val exStreams="http://example.org/streams/"
+  
+    def main(args:Array[String]):Unit={
+    val cqels=new CqelsReasoner
+    val system=ActorSystem.create("cqelsSystem")
+    val ssw=system.actorOf(Props(new SsnStream(cqels,exStreams+"s1",1)))
+
+    val listener=new ConstructListener(cqels.engine ){
+      var count=0                 
+      def update(triples:TripleList):Unit={
+        count+=triples.size
+      } 
+    }
+    ssw ! StartStream
+    //cqels.registerQuery(ssnQuery2, listener,false)
+    Thread.sleep(20000)
+    println("input: "+cqels.inputCount )
+    println("output: "+listener.count)
+    cqels.stop
   }
 }
