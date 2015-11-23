@@ -1,11 +1,10 @@
 
 name := "streapler"
-
 organization := "rsp"
-
 version := "0.0.1"
-
 scalaVersion := "2.11.6"
+
+enablePlugins(JavaAppPackaging)
   
 libraryDependencies ++= Seq(
   "org.apache.jena" % "apache-jena-libs" % "2.13.0",
@@ -26,4 +25,9 @@ resolvers ++= Seq(
   "plord" at "http://homepages.cs.ncl.ac.uk/phillip.lord/maven"
 )
 
+mainClass in Compile := Some("rsp.engine.cqels.Experiments")
+
+scriptClasspath := Seq("*")
+
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
+

@@ -22,9 +22,11 @@ object Experiments {
     }
     ssw ! StartStream
     //cqels.registerQuery(ssnQuery2, listener,false)
-    Thread.sleep(20000)
+    Thread.sleep(10000)
     println("input: "+cqels.inputCount )
     println("output: "+listener.count)
     cqels.stop
+    
+    system.shutdown
   }
 }
