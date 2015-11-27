@@ -4,7 +4,7 @@ import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 import org.slf4j.LoggerFactory
 import rsp.vocab._
-import rsp.data.Rdf._
+import rsp.data.RdfTools._
 import org.deri.cqels.engine.ConstructListener
 import akka.actor.ActorSystem
 import akka.actor.Props
@@ -107,31 +107,7 @@ class CqelsReasonerTest extends FlatSpec with Matchers  {
     runNativeCqels(exStreams+"s1")
   }
   
-  "Execute query" should "evaluate stream" in{
-    val cqels=new CqelsReasoner
-    val system=ActorSystem.create("cqelsSystem")
-    val ssw=system.actorOf(Props(new SsnStream(cqels,exStreams+"s1",1)))
-    //val ssw2=system.actorOf(Props(new SsnStream(cqels,pref+"s2")))
-    //ssw2 ! StartStream
-    //val ssw3=system.actorOf(Props(new SensorWebStream(cqels,pref+"s3")))
-    //ssw3 ! StartStream
-
-    val listener=new ConstructListener(cqels.engine ){
-      var count=0                 
-      def update(triples:TripleList):Unit={
-        count+=triples.size
-        /*triples.foreach{t=>
-          println("dibi "+t.getSubject)
-        }*/
-      } 
-    }
-    ssw ! StartStream
-    //cqels.registerQuery(ssnQuery2, listener,false)
-    Thread.sleep(20000)
-    println("input: "+cqels.inputCount )
-    println("output: "+listener.count)
-    cqels.stop
-  }
+ 
   
   
   def runNativeCqels(uri:String)={
@@ -171,24 +147,5 @@ class CqelsReasonerTest extends FlatSpec with Matchers  {
 }
 
 
-class SensorWebStream(cqels:CqelsReasoner,uri:String) extends CqelsStream(cqels,uri,10){
-  override def produce()={
-    val obs=OmOwl("obs"+UUID.randomUUID)
-
-        (1 to 10) foreach { i=>
-         
-    stream(obs,OmOwl.floatValue,Random.nextDouble.toString)
-    stream(obs,OmOwl.timestamp ,System.currentTimeMillis.toString)
-    stream(obs,OmOwl.observedProperty ,Random.nextDouble.toString)
-    stream(obs,OmOwl.observedProperty ,Random.nextDouble.toString)
-    stream(obs,OmOwl.observedProperty ,Random.nextDouble.toString)
-    stream(obs,OmOwl.observedProperty ,Random.nextDouble.toString)
-    stream(obs,OmOwl.observedProperty ,Random.nextDouble.toString)
-    stream(obs,OmOwl.observedProperty ,Random.nextDouble.toString)
-    stream(obs,OmOwl.observedProperty ,Random.nextDouble.toString)
-    stream(obs,OmOwl.observedProperty ,Random.nextDouble.toString)
-    }
-  }
-}
 
 

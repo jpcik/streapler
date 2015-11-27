@@ -6,7 +6,7 @@ import akka.actor._
 import akka.event.Logging
 import rsp.data._
 import scala.util.Random
-import rsp.data.Rdf._
+import rsp.data.RdfTools._
 import rsp.data.RdfStream._
 import scala.concurrent.Future
 

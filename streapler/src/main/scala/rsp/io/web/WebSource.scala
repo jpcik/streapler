@@ -45,7 +45,7 @@ class JsonWebStream(tmap:TriplesMap,props:Map[String,Any]) extends RdfStream {
   def pullData={
     //play.api.Play.current.    
     implicit val implicitClient = wsClient
-    import rsp.data.Rdf._
+    import rsp.data.RdfTools._
     import rsp.data.Literal._
 //println("before web call "+uri)
     val resp=WS.clientUrl(uri).get.map{response=>

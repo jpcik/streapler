@@ -4,7 +4,7 @@ import play.api.libs.iteratee.Enumerator
 import play.api.libs.iteratee.Iteratee
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
-import rsp.data.Rdf._
+import rsp.data.RdfTools._
 import scala.util.Random
 
 case class Timestamp(time:Long){

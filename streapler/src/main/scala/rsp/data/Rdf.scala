@@ -15,7 +15,7 @@ trait Literal extends RdfTerm{
 }
 
 case class AnyLiteral(value:Any) extends Literal {
-  import Rdf._
+  import RdfTools._
   lazy val datatype:Iri=value match {
     case s:String =>XSDDatatype.XSDstring
     case Double =>XSDDatatype.XSDdouble
@@ -34,7 +34,7 @@ class ExtLiteral(anyValue:Any,dtype:Iri,lang:Option[String]) extends Literal{
 
 
 object Literal{
-  import Rdf._
+  import RdfTools._
   def lit(s:Any)=AnyLiteral(s)
   
 }
@@ -64,7 +64,7 @@ object Graph{
 }
 
 
-object Rdf{
+object RdfTools{
   //implicit def str2lit(s:String)=Literal(s,null,null)
   implicit def str2iri(s:String)=Iri(s)
   implicit def iri2str(iri:Iri)=iri.toString

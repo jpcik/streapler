@@ -5,35 +5,41 @@ import scala.util.Random
 import scala.concurrent.duration._
 import akka.actor._
 import rsp.data.{Triple=>RspTriple}
-import rsp.data.Rdf._
 import rsp.vocab._
+import rsp.data.Iri
+import com.typesafe.config.Config
+import rsp.engine.RspReasoner
 
-case class StartStream()
+case object StartStream
 case object StopStream
 
-abstract class CqelsStream(cqels:CqelsReasoner,uri:String,rate:Int) extends Actor {
+abstract class RspStream(reasoner:RspReasoner,uri:String,conf:Config) extends Actor {
   var sleep=0
   var count=0  
   var sched:Cancellable=null
+  val rate=conf.getInt("rate")
   
-  def stream(s:String,p:String,o:String)={
+  def stream(t:RspTriple):Unit={
     count+=1
-    cqels.consume(uri,RspTriple(s, p, o))
+    reasoner.consume(uri,t)
   }
+  
+  def stream(s:Iri,p:Iri,o:Iri):Unit={
+    stream(RspTriple(s,p,o))
+  }
+
   def receive ={
     case StartStream =>
       sched=context.system.scheduler.schedule(0 seconds, rate milliseconds){
-        //println("papas")
         produce()
       }(context.dispatcher)
       
     case StopStream =>
-      if (!sched.isCancelled)
-        sched.cancel
+      if (sched!= null && !sched.isCancelled)
+        sched cancel
       
   }
 
-  def produce():Unit
-  
+  def produce():Unit  
 }
 

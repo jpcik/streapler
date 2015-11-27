@@ -68,7 +68,7 @@ class StreamReceiver(sched:ActorRef)(implicit ctx:ExecutionContext) {
 
 object EngineDemo{
   def main(args:Array[String]):Unit={
-    import rsp.data.Rdf._
+    import rsp.data.RdfTools._
     import scala.concurrent.ExecutionContext.Implicits.global 
     
     

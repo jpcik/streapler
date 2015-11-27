@@ -53,7 +53,7 @@ object JenaBindings{
 }
 
 object JenaAlgebra{
-  import rsp.data.Rdf._
+  import rsp.data.RdfTools._
   implicit def jena(op:Op):JenaOp = op match{
     case bgp:BgpOp=>
       val bp=new BasicPattern

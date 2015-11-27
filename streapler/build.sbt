@@ -15,6 +15,7 @@ libraryDependencies ++= Seq(
   "org.apache.spark" % "spark-streaming_2.11" % "1.4.1",
   "org.apache.spark" % "spark-mllib_2.11" % "1.4.1",
   "com.typesafe.play" %% "play-ws" % "2.3.8",  
+  "eu.trowl" % "trowl-core" % "1.4",
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "junit" % "junit" % "4.12" % "test"
 )
