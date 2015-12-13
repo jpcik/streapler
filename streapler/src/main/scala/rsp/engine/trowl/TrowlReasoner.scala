@@ -23,12 +23,8 @@ class TrowlReasoner(ontoFile:String) extends RspReasoner{
   def stop={    
   }
   
-  
   def reason=synchronized{
     reasoner.classify
-    clean
-  }
-  def clean={
     reasoner.clean(memory.toSet)
   }
   
@@ -38,9 +34,9 @@ class TrowlReasoner(ontoFile:String) extends RspReasoner{
     val pred = prop(t.p.toString)
     val obj = ind(t.o.toString)
     val trip= subj (pred->obj)
- memory+=trip
+    memory+=trip
     this.synchronized{
-    reasoner += trip
+      reasoner += trip
     }
   }
   

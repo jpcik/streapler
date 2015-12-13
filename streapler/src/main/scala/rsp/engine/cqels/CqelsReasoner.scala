@@ -1,30 +1,18 @@
 package rsp.engine.cqels
 
-import org.deri.cqels.engine.ExecContext
 import org.deri.cqels.engine.ConstructListener
-import com.hp.hpl.jena.graph.Triple
-import com.hp.hpl.jena.query.Query
-import rsp.engine.rewrite.KyrieRewriter
-import org.deri.cqels.lang.cqels.ElementStreamGraph
-import com.hp.hpl.jena.sparql.syntax.Element
-import com.hp.hpl.jena.sparql.syntax.ElementGroup
-import collection.JavaConversions._
-import org.deri.cqels.engine.Window
-import org.deri.cqels.engine.RangeWindow
-import com.hp.hpl.jena.sparql.serializer.FormatterTemplate
-import com.hp.hpl.jena.sparql.serializer.FmtTemplate
-import akka.actor.Actor
-import com.hp.hpl.jena.graph.NodeFactory
-import rsp.engine.RspReasoner
+import org.deri.cqels.engine.ExecContext
+
 import rsp.engine.RspListener
+import rsp.engine.RspReasoner
+import rsp.engine.rewrite.KyrieRewriter
+import rsp.util.JenaTools
 
 case class RegisterQuery(q:String)
 case class StreamTriple(uri:String,s:String,p:String,o:String)
 
 
 class CqelsReasoner(ontologyFile:String) extends RspReasoner{
-  //var regQueries=0
-  //var inputCount=0
   val engine= new ExecContext("./",false)
   import rsp.data.{Triple=>RdfTriple}
   import rsp.util.JenaTools._
@@ -32,7 +20,6 @@ class CqelsReasoner(ontologyFile:String) extends RspReasoner{
   def stop={
     engine.env().flushLog(true)
     
-    //engine.env().close()
   }
   
   def consume(uri:String,t:RdfTriple) ={
