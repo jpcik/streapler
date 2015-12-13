@@ -9,6 +9,7 @@ import com.hp.hpl.jena.rdf.model.AnonId
 import com.hp.hpl.jena.graph.Node
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype
 import com.hp.hpl.jena.rdf.model.ResourceFactory
+import scala.language.implicitConversions
 
 object JenaTools {
   import com.hp.hpl.jena.graph.NodeFactory._

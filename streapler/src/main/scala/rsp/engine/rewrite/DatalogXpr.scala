@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sparql.syntax._
 import com.hp.hpl.jena.vocabulary.RDF
 import rsp.util.JenaTools._
 import org.deri.cqels.lang.cqels.ElementStreamGraph
+import scala.language.implicitConversions
 
 class DatalogXpr(query:Query) {
   private val tf=new TermFactory
@@ -25,7 +26,9 @@ class DatalogXpr(query:Query) {
   /** Datalog clauses for the query */
   lazy val clausifiedQuery:Clause={
     val queryClauses=clausify(query.getQueryPattern).toArray
-    val projVars=query.getProjectVars.map(_.getVarName).toSeq
+    //val projVars=query.getProjectVars.map(_.getVarName).toSeq
+    //  .filter(v=>mappedVars.contains(v))
+    val projVars=query.getConstructTemplate.getTriples.map(vars).flatten
       .filter(v=>mappedVars.contains(v))
     val head=new FunctionalTerm("Q",projVars.map{v=>
       tf.getVariable(mappedVars(v))
@@ -146,7 +149,9 @@ class DatalogXpr(query:Query) {
   
   private def triplify(t:Term,vocab:Map[String,Node_URI],vars:Map[String,String])={
     def sparqlVar(key:String)=
+      if (key startsWith "?")
       Var.alloc(vars.getOrElse(key,key.replace("?", "")))
+      else toJenaRes(key).asNode
     //TODO keep original namespaces
     logger.info("triplif Term: "+t)
     val pref=""//"http://purl.oclc.org/NET/ssnx/ssn#"
@@ -224,5 +229,14 @@ class DatalogXpr(query:Query) {
     }
     vars(t.getSubject)++vars(t.getObject)
   }
-         
+  
+  
+  private def vars(t:Triple)={
+    def vars(n:Node)=n match {
+      case v:Var=>Seq(v.getVarName)
+      case _ => Seq()
+    }
+    vars(t.getSubject)++vars(t.getObject)
+  }
+  
 }

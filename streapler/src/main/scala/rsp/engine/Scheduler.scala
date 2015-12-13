@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph
 import com.hp.hpl.jena.query.DatasetFactory
 import com.hp.hpl.jena.sparql.graph.GraphFactory
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory
+import scala.language.postfixOps
 
 class Scheduler extends Actor with ActorLogging{
   val streams=new ArrayBuffer[Iri]

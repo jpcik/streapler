@@ -9,14 +9,27 @@ import collection.JavaConversions._
 import rsp.engine.RspReasoner
 import rsp.data.{Triple=>RdfTriple}
 import rsp.engine.RspListener
+import concurrent.duration._
+import scala.collection.mutable.ArrayBuffer
+import org.semanticweb.owlapi.model.OWLAxiom
 
 class TrowlReasoner(ontoFile:String) extends RspReasoner{
   implicit val mgr=OWLManager.createOWLOntologyManager
   implicit val fac=mgr.getOWLDataFactory    
   val onto=loadOntology(ontoFile)
   val reasoner = new RELReasonerFactory().createReasoner(onto)
-  
+  val memory=new ArrayBuffer[OWLAxiom]
+
   def stop={    
+  }
+  
+  
+  def reason=synchronized{
+    reasoner.classify
+    clean
+  }
+  def clean={
+    reasoner.clean(memory.toSet)
   }
   
   def consume(uri:String,t:RdfTriple)={
@@ -24,8 +37,11 @@ class TrowlReasoner(ontoFile:String) extends RspReasoner{
     val subj = ind(t.s.toString)
     val pred = prop(t.p.toString)
     val obj = ind(t.o.toString)
-    reasoner += subj (pred->obj)
-    
+    val trip= subj (pred->obj)
+ memory+=trip
+    this.synchronized{
+    reasoner += trip
+    }
   }
   
   def registerQuery(q:String,listener:RspListener,reasoner:Boolean=false)={

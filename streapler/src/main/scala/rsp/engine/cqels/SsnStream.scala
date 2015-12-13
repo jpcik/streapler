@@ -34,11 +34,14 @@ class SsnStream(cqels:RspReasoner,uri:String,conf:Config) extends RspStream(cqel
   def currentobs:Iri=s"${obs}obs${System.currentTimeMillis}"
 
   val sensor1=Iri(s"${obs}sensor1")
+  val loc1=Iri(s"${obs}loc1")
   
   val TemperatureObservation:Iri=s"${met}TemperatureObservation"
   val AirTemperatureObservation:Iri=s"${met}AirTemperatureObservation"
   val PrecipitationObservation:Iri=s"${met}PrecipitationObservation"
   val HumidityObservation:Iri=s"${met}HumidityObservation"
+    val RelativeHumidityObservation:Iri=s"${met}RelativeHumidityObservation"
+
   val TemperatureSensor:Iri=s"${aws}TemperatureSensor"
   val Thermistor:Iri=s"${aws}Thermistor"
   val CapacitiveBead:Iri=s"${aws}CapacitiveBead"
@@ -46,19 +49,33 @@ class SsnStream(cqels:RspReasoner,uri:String,conf:Config) extends RspStream(cqel
   val temperature:Iri=s"${qu}temperature"
   val AirMedium:Iri=s"${met}AirMedium"
   val air:Iri=s"${cff}air"
+  val locatedIn:Iri=s"${met}locatedIn"
   
-  def item1="tempObs"->Seq(
-    tri(currentobs,Rdf.a,TemperatureObservation)            
-  )
+  def item1={
+    val cobs=currentobs
+    "tempObs"->Seq(
+    tri(cobs,Rdf.a,TemperatureObservation)
+    //,tri(cobs,locatedIn,loc1)
+    
+  
+  )}
   def item2="obsByTherm"->Seq(
     tri(currentobs,Ssn.observedBy,sensor1),
     tri(sensor1,Rdf.a,Thermistor)            
   )
 
-  def item3="precObs"->Seq(
-    tri(currentobs,Rdf.a,PrecipitationObservation)            
-  )
-
+  def item3={
+   val cobs=currentobs  
+    "precObs"->Seq(
+  
+    tri(cobs,Rdf.a,PrecipitationObservation)            
+    )}
+def item33={
+   val cobs=currentobs  
+    "relhumObs"->Seq(
+  
+    tri(cobs,Rdf.a,RelativeHumidityObservation)            
+    )}
   def item4="obsByBead"->Seq(
     tri(currentobs,Ssn.observedBy,sensor1),
     tri(sensor1,Rdf.a,CapacitiveBead)            
@@ -113,7 +130,7 @@ class SsnStream(cqels:RspReasoner,uri:String,conf:Config) extends RspStream(cqel
     tri(sensor1,Rdf.a ,Thermistor )            
   )
 
-  def streams=Map(item1,item2,item3,item4,item5,item6,item7,item8,item9,item10,item11,item12)
+  def streams=Map(item1,item2,item3,item4,item5,item6,item7,item8,item9,item10,item11,item12,item33)
   
 }
 

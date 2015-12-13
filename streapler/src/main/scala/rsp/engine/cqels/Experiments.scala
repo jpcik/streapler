@@ -9,6 +9,8 @@ import rsp.vocab.Ssn
 import rsp.engine.trowl.TrowlReasoner
 import rsp.engine.RspReasoner
 import rsp.engine.RspListener
+import scala.language.reflectiveCalls
+import concurrent.duration._
 
 object Experiments extends CommonPrefixes{
   type TripleList = java.util.List[Triple]
@@ -22,15 +24,19 @@ object Experiments extends CommonPrefixes{
     val queryIds=config.getIntList("queryIds")
     val enableRewriting=config.getBoolean("enableRewriting")
     val ontology=config.getString("ontology")
-
+var reas=0
   def main(args:Array[String]):Unit={
     
+    val system=ActorSystem.create("rspSystem")
+
     val reasoner=engine match {
       case "cqels"=>new CqelsReasoner(ontology)
-      case "trowl"=>new TrowlReasoner(ontology)
+      case "trowl"=>
+        val trowl=new TrowlReasoner(ontology)
+        schedReasoner(system, trowl)
+        trowl
     }
     
-    val system=ActorSystem.create("rspSystem")
     val ssw=system.actorOf(Props(new SsnStream(reasoner,exStreams+"s1",inputConfig)))
     val listener=createListener(reasoner)
   
@@ -42,12 +48,23 @@ object Experiments extends CommonPrefixes{
     println("queries: "+reasoner.regQueries  )
     println("input: "+reasoner.inputCount )
     println("output: "+listener.count)
-    
+        println("reasoning: "+reas)
+
     ssw ! StopStream
     system.shutdown
     reasoner.stop    
-    System.exit(0)
+    //System.exit(0)
   }
+      val rate=inputConfig.getInt("rate")
+
+  def schedReasoner(system:ActorSystem,trowl:TrowlReasoner)={
+    import concurrent.ExecutionContext.Implicits.global
+    val sched=system.scheduler.schedule(0 seconds, rate milliseconds){
+      reas+=1
+      trowl.reason
+    }
+  }
+  
   
   def createListener(reasoner:RspReasoner)=reasoner match {
     case cqels:CqelsReasoner=>
@@ -73,7 +90,7 @@ object Experiments extends CommonPrefixes{
         else construct    
   	  s"""CONSTRUCT { $const }  
        WHERE { 
-         STREAM <${exStreams}s1> [RANGE 0ms]  {
+         STREAM <${exStreams}s1> [RANGE 1ms]  {
            $bgp        
        }
       }"""
@@ -91,15 +108,15 @@ object Experiments extends CommonPrefixes{
       """)
       
     val ssn4 =template(  	 
-      s"""?t a <${met}HumidityObservation> .   
-          ?s a <${met}AirTemperatureObservation> .               
-      """,s"?s <${met}found> ?t .")
+      s"""   
+                  
+          ?s a <${met}HumidityObservation>.             
+      """,s"?s <${met}found> <triple> .")
       
     val ssn5 =template(
-      """ ?t a <${met}HumidityObservation> .   
-          ?s a <${met}AirTemperatureObservation> .               
-          ?i a <${met}RadiationObservation> .               
-      """,s"?s <${met}found> ?t ; <${met}found> ?i")
+      s""" ?s <${ssn}featureOfInterest> ?f .   
+          ?f a <${met}AirMedium> .               
+      """)
       
     val ssn6 =template(
       s"""?s <${Ssn.iri}observedBy> ?po .
@@ -109,8 +126,22 @@ object Experiments extends CommonPrefixes{
     val ssn7 =template(
       s"""?s  a <${ssn}Observation>.        
       """)
+    val ssn8 =template(
+      s"""?s  <${ssn}observedBy> ?g. ?g a <${ssn}Sensor>        
+      """)
+  
       
-    List(ssn1,ssn2,ssn3,ssn4,ssn5,ssn6,ssn7)
+        val ssn9 =template(
+      s"""?s  <${ssn}observedProperty> ?g. ?g a <${ssn}Property>        
+      """)
+          val ssn10 =template(
+      s"""
+?s   <${ssn}observedProperty> ?o.
+?o  a <${qudim}Temperature> .   
+?s     <${ssn}featureOfInterest> ?f. ?f a <${met}AirMedium>. 
+?s     <${ssn}observedBy> ?c. ?c a <${aws}Thermistor>. 
+      """)  
+    List(ssn1,ssn2,ssn3,ssn4,ssn5,ssn6,ssn7,ssn8,ssn9,ssn10)
   }
 }
 
@@ -120,6 +151,9 @@ trait CommonPrefixes {
   val aws="http://purl.oclc.org/NET/ssnx/meteo/aws#"
   val qudim="http://purl.oclc.org/NET/ssnx/qu/dim#"
   val qu="http://purl.oclc.org/NET/ssnx/qu/qu#"
+  val cff="http://purl.oclc.org/NET/ssnx/cf/cf-feature#"
+  val owl="http://www.w3.org/2002/07/owl#"
 }
+
 
 

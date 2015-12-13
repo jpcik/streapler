@@ -4,6 +4,7 @@ import eu.trowl.owlapi3.rel.tms.reasoner.dl.RELReasoner
 import org.semanticweb.owlapi.model._
 import collection.JavaConversions._
 import java.io.File
+import scala.language.implicitConversions
 
 object OwlApiTools {
 
@@ -27,7 +28,7 @@ object OwlApiTools {
     def apply(prop:OWLObjectProperty,obj:OWLNamedIndividual)(implicit fac:OWLDataFactory)={
       fac.getOWLObjectPropertyAssertionAxiom(prop, ind, obj)     
     }
-    def apply(t:Pair[OWLObjectProperty,OWLNamedIndividual])(implicit fac:OWLDataFactory)={
+    def apply(t:(OWLObjectProperty,OWLNamedIndividual))(implicit fac:OWLDataFactory)={
       fac.getOWLObjectPropertyAssertionAxiom(t._1 , ind, t._2 )     
     }
   }

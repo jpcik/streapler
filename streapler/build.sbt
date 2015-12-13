@@ -32,3 +32,4 @@ scriptClasspath := Seq("*")
 
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
 
+scalacOptions ++= Seq("-feature","-deprecation")

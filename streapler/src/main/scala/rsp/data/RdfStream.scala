@@ -6,6 +6,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import rsp.data.RdfTools._
 import scala.util.Random
+import scala.language.implicitConversions
 
 case class Timestamp(time:Long){
   override def toString=s"ts($time)"

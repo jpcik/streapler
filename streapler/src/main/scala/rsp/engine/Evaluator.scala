@@ -29,6 +29,7 @@ import rsp.io.web.JsonWebFeed
 import rsp.io.rml.RmlEngine
 import rsp.io.web.JsonWebStream
 import rsp.query.algebra._
+import scala.language.postfixOps
 
 object EvalTools{
   def str(recStr:String,ctx:StreamingContext)={
@@ -65,7 +66,7 @@ class Evaluator {
   def start={
     feeds.foreach{f=> f ! Init}    
     strContext.start
-    strContext.awaitTermination(20)
+    strContext.awaitTerminationOrTimeout(20)
   }
 
   def end={
@@ -106,7 +107,7 @@ case class Bindings(values:Map[String,RdfTerm]){
 
 object Eval{
   
-  def main(args:Array[String])={
+  def main(args:Array[String]):Unit={
     trep
   }
 

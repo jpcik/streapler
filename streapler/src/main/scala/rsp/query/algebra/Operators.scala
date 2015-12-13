@@ -3,6 +3,7 @@ package rsp.query.algebra
 import rsp.data._
 import org.joda.time.Period
 import com.hp.hpl.jena.rdf.model.Property
+import scala.language.implicitConversions
 
 trait Op {
   

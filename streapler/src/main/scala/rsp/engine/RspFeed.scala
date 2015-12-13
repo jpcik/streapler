@@ -9,6 +9,7 @@ import scala.util.Random
 import rsp.data.RdfTools._
 import rsp.data.RdfStream._
 import scala.concurrent.Future
+import scala.language.postfixOps
 
 trait Feed{
   val stream:RdfStream

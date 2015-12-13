@@ -9,6 +9,7 @@ import rsp.vocab._
 import rsp.data.Iri
 import com.typesafe.config.Config
 import rsp.engine.RspReasoner
+import scala.language.postfixOps
 
 case object StartStream
 case object StopStream

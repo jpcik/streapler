@@ -8,11 +8,11 @@ import org.apache.spark.mllib.linalg.Vectors
 
 class RspReceiver(feed:String) extends Actor with ActorHelper{
   var count=0
-  private var feeder:ActorRef=null
+  private var feeder:ActorSelection=null
   override def preStart()={
     println(s"tobo ${self.path}")
     println(s"tobo ${feed}")
-    feeder=context.actorFor(feed)
+    feeder=context.actorSelection(feed)
     if (feeder!=null)
       feeder ! Subscribe(self)
     else println("nothing shakin")

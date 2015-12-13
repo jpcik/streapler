@@ -1,6 +1,7 @@
 package rsp.data
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype
+import scala.language.implicitConversions
 
 trait RdfTerm
 

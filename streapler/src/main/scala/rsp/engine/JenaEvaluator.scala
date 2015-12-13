@@ -27,6 +27,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter
 import com.hp.hpl.jena.sparql.expr.nodevalue._
 import com.hp.hpl.jena.sparql.expr._
+import scala.language.implicitConversions
 
 class JenaEvaluator(q:JenaOp) {
   val log=LoggerFactory.getLogger(this.getClass)
