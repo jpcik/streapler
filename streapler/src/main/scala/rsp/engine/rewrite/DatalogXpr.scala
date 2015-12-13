@@ -1,20 +1,21 @@
 package rsp.engine.rewrite
 
 import scala.collection.JavaConversions._
+import scala.language.implicitConversions
+
+import org.deri.cqels.lang.cqels.ElementStreamGraph
 import org.oxford.comlab.requiem.rewriter._
 import org.slf4j.LoggerFactory
-import com.hp.hpl.jena.graph.Node
-import com.hp.hpl.jena.graph.Node_URI
-import com.hp.hpl.jena.graph.Triple
+
+import com.hp.hpl.jena.graph._
 import com.hp.hpl.jena.query.Query
-import com.hp.hpl.jena.rdf.model.ResourceFactory
 import com.hp.hpl.jena.sparql.core.TriplePath
 import com.hp.hpl.jena.sparql.core.Var
 import com.hp.hpl.jena.sparql.syntax._
+
 import com.hp.hpl.jena.vocabulary.RDF
-import rsp.util.JenaTools._
-import org.deri.cqels.lang.cqels.ElementStreamGraph
-import scala.language.implicitConversions
+
+import rsp.util.JenaTools.toJenaRes
 
 class DatalogXpr(query:Query) {
   private val tf=new TermFactory
