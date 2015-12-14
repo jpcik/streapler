@@ -26,7 +26,7 @@ resolvers ++= Seq(
   "plord" at "http://homepages.cs.ncl.ac.uk/phillip.lord/maven"
 )
 
-mainClass in Compile := Some("rsp.engine.cqels.Experiments")
+mainClass in Compile := Some("rsp.engine.rewriting.Experiments")
 
 scriptClasspath := Seq("*")
 

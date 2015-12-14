@@ -4,7 +4,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager
 import eu.trowl.owlapi3.rel.tms.reasoner.dl.RELReasonerFactory
 import java.io.File
 import rsp.util.OwlApiTools._
-import rsp.engine.cqels.CommonPrefixes
+import rsp.engine.rewriting.CommonPrefixes
 import collection.JavaConversions._
 import rsp.engine.RspReasoner
 import rsp.data.{Triple=>RdfTriple}
