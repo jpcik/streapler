@@ -32,7 +32,7 @@ object OmOwl extends Vocab{
   val timestamp=iri+"timestamp"    
 }
 
-
+/*
 object Ssn extends Vocab{
   override val iri:Iri="http://purl.oclc.org/NET/ssnx/ssn#"
   val Sensor=Ssn("Sensor")
@@ -43,7 +43,7 @@ object Ssn extends Vocab{
   val featureOfInterest=Ssn("featureOfInterest")
   val observedProperty=Ssn("observedProperty")
   
-}
+}*/
 
 object Rsp extends Vocab{
   override val iri:Iri="http://www.w3.org/ns/rsp#"
@@ -62,12 +62,17 @@ object R2rml extends Vocab{
   override val iri:Iri="http://www.w3.org/ns/r2rml#"
   val subjectMap=R2rml("subjectMap")  
   val parentTriplesMap=R2rml("parentTriplesMap")  
+  val parent=R2rml("parent")  
+  val child=R2rml("child")  
   val predicateObjectMap=R2rml("predicateObjectMap")  
   val predicateMap=R2rml("predicateMap")  
   val objectMap=R2rml("objectMap")  
   val predicate=R2rml("predicate")  
   val template=R2rml("template")  
   val constant=R2rml("constant")  
+  val datatype=R2rml("datatype")
+  val column  =R2rml("column")
+  val tableName=R2rml("tableName")
 }
 
 object Rml extends Vocab{
@@ -75,5 +80,5 @@ object Rml extends Vocab{
   val logicalSource=Rml("logicalSource")  
   val source=Rml("source")  
   val reference=Rml("reference")  
-  
+  val query=Rml("query")
 }

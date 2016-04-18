@@ -8,7 +8,7 @@ import org.oxford.comlab.requiem.parser.ELHIOParser
 import org.oxford.comlab.requiem.rewriter.Clause
 import org.oxford.comlab.requiem.rewriter.PreprocessRewriter
 import org.oxford.comlab.requiem.rewriter.TermFactory
-import com.hp.hpl.jena.query.Query
+import org.apache.jena.query.Query
 import es.upm.fi.dia.oeg.newrqr.DatalogSPARQLConversor
 import es.upm.fi.dia.oeg.newrqr.ISI2RQRLexer
 import es.upm.fi.dia.oeg.newrqr.ISI2RQRParser

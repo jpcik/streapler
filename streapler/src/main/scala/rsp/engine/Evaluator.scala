@@ -14,7 +14,7 @@ import rsp.data._
 import org.apache.spark.streaming.dstream.ReceiverInputDStream
 import rsp.query.algebra.TriplePattern
 import rsp.query.algebra.BgpOp
-import com.hp.hpl.jena.sparql.algebra.Algebra
+import org.apache.jena.sparql.algebra.Algebra
 import collection.JavaConversions._
 import org.apache.spark.mllib.clustering.StreamingKMeans
 import org.apache.spark.mllib.linalg.Vectors

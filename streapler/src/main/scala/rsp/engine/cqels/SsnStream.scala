@@ -1,5 +1,4 @@
 package rsp.engine.cqels
-import com.hp.hpl.jena.vocabulary.RDF
 import rsp.vocab._
 import rsp.data.RdfTools._
 import rsp.data._
@@ -59,8 +58,9 @@ class SsnStream(cqels:RspReasoner,uri:String,conf:Config) extends RspStream(cqel
     
   
   )}
+  
   def item2="obsByTherm"->Seq(
-    tri(currentobs,Ssn.observedBy,sensor1),
+    tri(currentobs,SSN.observedBy,sensor1),
     tri(sensor1,Rdf.a,Thermistor)            
   )
 
@@ -77,56 +77,56 @@ def item33={
     tri(cobs,Rdf.a,RelativeHumidityObservation)            
     )}
   def item4="obsByBead"->Seq(
-    tri(currentobs,Ssn.observedBy,sensor1),
+    tri(currentobs,SSN.observedBy,sensor1),
     tri(sensor1,Rdf.a,CapacitiveBead)            
   )
 
   def item5="featAirTempObs"->Seq(
-    tri(currentobs,Ssn.featureOfInterest ,air),            
+    tri(currentobs,SSN.featureOfInterest ,air),            
     tri(currentobs,Rdf.a ,TemperatureObservation)            
   )
 
   def item6="featAirObsTemp"->Seq(
-    tri(currentobs,Ssn.featureOfInterest ,air),            
-    tri(currentobs,Ssn.observedProperty ,temperature)            
+    tri(currentobs,SSN.featureOfInterest ,air),            
+    tri(currentobs,SSN.observedProperty ,temperature)            
   )
 
   def item7="featAirMedTempObs"->Seq(
-    tri(currentobs,Ssn.featureOfInterest ,met+"_air"),            
+    tri(currentobs,SSN.featureOfInterest ,met+"_air"),            
     tri(met+"_air",Rdf.a ,AirMedium),            
     tri(currentobs,Rdf.a ,TemperatureObservation)            
   )
 
   def item8="featAirObsByTempSensor"->Seq(
-    tri(currentobs,Ssn.featureOfInterest ,air),            
-    tri(currentobs,Ssn.observedBy ,sensor1),            
+    tri(currentobs,SSN.featureOfInterest ,air),            
+    tri(currentobs,SSN.observedBy ,sensor1),            
     tri(sensor1,Rdf.a ,TemperatureSensor)            
   )
 
   def item9="featAirMediumObsPropTemp"->Seq(
-    tri(currentobs,Ssn.featureOfInterest ,met+"_air"),            
+    tri(currentobs,SSN.featureOfInterest ,met+"_air"),            
     tri(met+"_air",Rdf.a ,AirMedium),            
-    tri(currentobs,Ssn.observedProperty ,temperature)            
+    tri(currentobs,SSN.observedProperty ,temperature)            
   )
 
   def item10="featAirMediumObsByTempSensor"->Seq(
-    tri(currentobs,Ssn.featureOfInterest ,met+"_air"),            
+    tri(currentobs,SSN.featureOfInterest ,met+"_air"),            
     tri(met+"_air",Rdf.a ,AirMedium),            
-    tri(currentobs,Ssn.observedBy ,sensor1),            
+    tri(currentobs,SSN.observedBy ,sensor1),            
     tri(sensor1,Rdf.a ,TemperatureSensor)            
   )
   
   def item11="featAirMediumObsPropTempQ"->Seq(
-    tri(currentobs,Ssn.featureOfInterest ,met+"_air"),            
+    tri(currentobs,SSN.featureOfInterest ,met+"_air"),            
     tri(met+"_air",Rdf.a ,AirMedium),            
-    tri(currentobs,Ssn.observedProperty ,met+"_temp"),            
+    tri(currentobs,SSN.observedProperty ,met+"_temp"),            
     tri(met+"_temp",Rdf.a ,Temperature)            
   )
 
   def item12="featAirMediumObsObyByTherm"->Seq(
-    tri(currentobs,Ssn.featureOfInterest ,met+"_air"),            
+    tri(currentobs,SSN.featureOfInterest ,met+"_air"),            
     tri(met+"_air",Rdf.a ,AirMedium),            
-    tri(currentobs,Ssn.observedBy ,sensor1),            
+    tri(currentobs,SSN.observedBy ,sensor1),            
     tri(sensor1,Rdf.a ,Thermistor )            
   )
 

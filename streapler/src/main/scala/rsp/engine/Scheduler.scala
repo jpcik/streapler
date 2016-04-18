@@ -7,14 +7,14 @@ import concurrent.duration._
 import akka.actor._
 import play.api.libs.iteratee.Iteratee
 import org.joda.time.Period
-import com.hp.hpl.jena.rdf.model.ModelFactory
+import org.apache.jena.rdf.model.ModelFactory
 import rsp.data._
 import rsp.query.algebra._
 import rsp.query.algebra.Op._
-import com.hp.hpl.jena.sparql.core.DatasetGraph
-import com.hp.hpl.jena.query.DatasetFactory
-import com.hp.hpl.jena.sparql.graph.GraphFactory
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory
+import org.apache.jena.sparql.core.DatasetGraph
+import org.apache.jena.query.DatasetFactory
+import org.apache.jena.sparql.graph.GraphFactory
+import org.apache.jena.sparql.core.DatasetGraphFactory
 import scala.language.postfixOps
 
 class Scheduler extends Actor with ActorLogging{

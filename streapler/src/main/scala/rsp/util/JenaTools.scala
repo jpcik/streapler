@@ -1,19 +1,21 @@
 package rsp.util
 
-import com.hp.hpl.jena.graph.NodeFactory
-import com.hp.hpl.jena.graph.Triple
+import org.apache.jena.graph.NodeFactory
+import org.apache.jena.graph.Triple
 import rsp.data.{Triple=>RdfTriple}
 import rsp.data.RdfTerm
 import rsp.data._
-import com.hp.hpl.jena.rdf.model.AnonId
-import com.hp.hpl.jena.graph.Node
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype
-import com.hp.hpl.jena.rdf.model.ResourceFactory
+import org.apache.jena.rdf.model.AnonId
+import org.apache.jena.graph.Node
+import org.apache.jena.datatypes.xsd.XSDDatatype
+import org.apache.jena.rdf.model.ResourceFactory
 import scala.language.implicitConversions
+import org.apache.jena.graph.BlankNodeId
 
 object JenaTools {
-  import com.hp.hpl.jena.graph.NodeFactory._
-  import com.hp.hpl.jena.datatypes.xsd.XSDDatatype._
+  val TTL="TTL"
+  import org.apache.jena.graph.NodeFactory._
+  import org.apache.jena.datatypes.xsd.XSDDatatype._
   
   def toJenaRes(s:String)=
     ResourceFactory.createResource(s)  
@@ -23,6 +25,9 @@ object JenaTools {
 
   implicit def toJenaProperty(iri:Iri)=
     ResourceFactory.createProperty(iri.value)
+
+  implicit def toJenaLit(lit:AnyLiteral)=
+    NodeFactory.createLiteral(lit.value.toString)
     
   implicit def toJenaTriple(t:RdfTriple):Triple={
     new Triple(t.subject ,t.predicate ,t._object )
@@ -30,7 +35,7 @@ object JenaTools {
   
   implicit def toJenaNode(t:RdfTerm):Node=t match {
     case i:Iri=>createURI(i.toString)
-    case bn:Bnode=>createAnon(new AnonId(bn.id))
+    case bn:Bnode=>createBlankNode(new BlankNodeId(bn.id))
     case l:Literal=>l.value match {
       case i:Integer=>createLiteral(l.value.toString,XSDinteger)
       case i:Double=>createLiteral(l.value.toString,XSDdouble)

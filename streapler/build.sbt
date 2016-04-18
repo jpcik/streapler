@@ -7,7 +7,8 @@ scalaVersion := "2.11.6"
 enablePlugins(JavaAppPackaging)
   
 libraryDependencies ++= Seq(
-  "org.apache.jena" % "apache-jena-libs" % "2.13.0",
+  "org.apache.jena" % "apache-jena-libs" % "3.0.1",
+  "com.typesafe.slick" %% "slick" % "2.1.0",  
   "org.antlr" % "antlr" % "3.2",
   "org.semanticweb.hermit" % "HermiT" % "1.3.7.3" intransitive,
   "net.sourceforge.owlapi" % "owlapi-api" % "3.4.4" intransitive,
@@ -16,6 +17,9 @@ libraryDependencies ++= Seq(
   "org.apache.spark" % "spark-mllib_2.11" % "1.4.1",
   "com.typesafe.play" %% "play-ws" % "2.3.8",  
   "eu.trowl" % "trowl-core" % "1.4",
+  "rsp" %% "cqels" % "1.1.0",
+  "com.eed3si9n" %% "treehugger" % "0.4.1",
+  "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",  
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "junit" % "junit" % "4.12" % "test"
 )
@@ -23,7 +27,8 @@ libraryDependencies ++= Seq(
 resolvers ++= Seq(
   "typesafe" at "http://repo.typesafe.com/typesafe/releases/",
   "gsn" at "http://osper.epfl.ch:8081/artifactory/gsn-release",
-  "plord" at "http://homepages.cs.ncl.ac.uk/phillip.lord/maven"
+  "plord" at "http://homepages.cs.ncl.ac.uk/phillip.lord/maven",
+  Resolver.sonatypeRepo("public")
 )
 
 mainClass in Compile := Some("rsp.engine.rewriting.Experiments")

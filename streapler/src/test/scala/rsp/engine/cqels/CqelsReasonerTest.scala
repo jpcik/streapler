@@ -10,9 +10,9 @@ import akka.actor.ActorSystem
 import akka.actor.Props
 import java.util.UUID
 import scala.util.Random
-import com.hp.hpl.jena.graph.Triple
+import org.apache.jena.graph.Triple
 import rsp.engine.rewrite.KyrieRewriter
-import com.hp.hpl.jena.vocabulary.RDF
+import org.apache.jena.vocabulary.RDF
 import collection.JavaConversions._
 import org.deri.cqels.engine.ExecContext
 import scala.concurrent.Future
@@ -48,7 +48,7 @@ class CqelsReasonerTest extends FlatSpec with Matchers  {
   	CONSTRUCT {?s <http://pop.org/prod> <pipo> . }  
     WHERE { 
       STREAM <${exStreams}s1> [RANGE 1ms]  {
-        ?s <${Ssn.iri}observedBy> ?po .
+        ?s <$SSN.iri}observedBy> ?po .
         ?po a <${aws}TemperatureSensor>.
       }
 
@@ -119,9 +119,9 @@ class CqelsReasonerTest extends FlatSpec with Matchers  {
     Future {
       while (true){
         println("trala")
-        val obs=Ssn("obs"+System.currentTimeMillis)        
+        val obs=SSN("obs"+System.currentTimeMillis)        
         val sens=rsp.data.Iri("http://oeg-upm.net/onto/sensordemo/sens1")//+System.currentTimeMillis)
-        engine.engine().send(uri, RspTriple(obs,Ssn.observedBy,sens))
+        engine.engine().send(uri, RspTriple(obs,SSN.observedBy,sens))
         //engine.engine().send(uri,RspTriple(sens,RDF.`type`.toString,"http://purl.oclc.org/NET/ssnx/meteo/aws#Thermistor"))    
         Thread.sleep(2000)
       }

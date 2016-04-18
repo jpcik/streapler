@@ -7,13 +7,13 @@ import org.deri.cqels.lang.cqels.ElementStreamGraph
 import org.oxford.comlab.requiem.rewriter._
 import org.slf4j.LoggerFactory
 
-import com.hp.hpl.jena.graph._
-import com.hp.hpl.jena.query.Query
-import com.hp.hpl.jena.sparql.core.TriplePath
-import com.hp.hpl.jena.sparql.core.Var
-import com.hp.hpl.jena.sparql.syntax._
+import org.apache.jena.graph._
+import org.apache.jena.query.Query
+import org.apache.jena.sparql.core.TriplePath
+import org.apache.jena.sparql.core.Var
+import org.apache.jena.sparql.syntax._
 
-import com.hp.hpl.jena.vocabulary.RDF
+import org.apache.jena.vocabulary.RDF
 
 import rsp.util.JenaTools.toJenaRes
 

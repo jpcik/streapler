@@ -1,16 +1,16 @@
 package rsp.engine.cqels
 
-import com.hp.hpl.jena.query.Query
-import com.hp.hpl.jena.sparql.syntax.ElementGroup
-import com.hp.hpl.jena.sparql.syntax.Element
-import com.hp.hpl.jena.sparql.serializer.FmtTemplate
+import org.apache.jena.query.Query
+import org.apache.jena.sparql.syntax.ElementGroup
+import org.apache.jena.sparql.syntax.Element
+import org.apache.jena.sparql.serializer.FmtTemplate
 import org.deri.cqels.engine.Window
 import org.deri.cqels.engine.RangeWindow
 import org.deri.cqels.lang.cqels.ElementStreamGraph
 import org.deri.cqels.lang.cqels.ParserCQELS
 import collection.JavaConversions._
-import com.hp.hpl.jena.sparql.syntax.ElementUnion
-import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph
+import org.apache.jena.sparql.syntax.ElementUnion
+import org.apache.jena.sparql.syntax.ElementNamedGraph
  
 object CqelsQueryWriter {
   
