@@ -1,0 +1,43 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix ri: <http://epfl.ch/r2rml#>.
+@prefix rml: <http://semweb.mmlab.be/ns/rml#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix obs: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>.
+@prefix time: <http://www.w3.org/2006/time#>.
+@prefix : <http://epfl.ch/mapping/>.
+
+:ssw   ri:const "http://knoesis.wright.edu/ssw/".
+:ssw-o ri:const "http://knoesis.wright.edu/ssw/ont/weather.owl#".
+
+:UnitMap
+  rml:logicalSource [
+    rml:source "data/units.csv";
+    rml:referenceFormulation rml:CsvPath; ];  
+  ri:smap  [ri:tpl "{ssw-o}{1}"].
+  
+:MeasureDataMap
+  ri:smap  [ri:tpl "{ssw}MeasureData_{2}_{1}_{0}"];
+  ri:pomap [ri:pre rdf:type;       ri:omap [ri:const obs:MeasureData]];
+  ri:pomap [ri:pre obs:floatValue; ri:omap [ri:ref "3"; ri:dtype xsd:float]];
+  ri:pomap [ri:pre obs:uom;        ri:omap [ri:parentmap :UnitMap; rr:child "0"; rr:parent "0" ]].
+ 
+:ObservationMap  
+  rml:logicalSource [
+    rml:root true;
+    rml:source "file:///Users/calbimon/git/streapler/streapler/src/test/resources/data/lsd_small.csv";
+    rml:shource "file:///Users/calbimon/data/lsd/nevada.csv";
+    rml:referenceFormulation rml:CsvPath; ];  
+  ri:smap  [ri:tpl "{ssw}Observation_{2}_{1}_{0}"];
+  ri:pomap [ri:pre rdf:type;             ri:omap [ri:tpl "ssw-o{2}Observation"]];
+  ri:pomap [ri:pre obs:observedProperty; ri:omap [ri:tpl "{ssw-o}_{2}"]];
+  ri:pomap [ri:pre obs:procedure;        ri:omap [ri:tpl "{ssw}System_{1}"]];
+  ri:pomap [ri:pre obs:result;           ri:omap [ri:parentmap :MeasureDataMap]];
+  ri:pomap [ri:pre obs:samplingTime;     ri:omap [ri:parentmap :InstantMap]].
+        
+:InstantMap
+  ri:smap  [ri:tpl "{ssw}Instant_{0}"];
+  ri:pomap [ri:pre rdf:type;           ri:omap [ri:const time:Instant]];
+  ri:pomap [ri:pre time:inXSDDateTime; ri:omap [ri:ref "0"; ri:dtype xsd:dateTime]].
+ 

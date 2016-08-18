@@ -1,0 +1,55 @@
+{
+  "@context": ["http://www.w3.org/ns/csvw", 
+               {"@language": "en",
+                "base": "http://opensense.epfl.ch/data/",
+                "time": "http://www.w3.org/2006/time#",
+                "ssn": "http://purl.oclc.org/NET/ssnx/ssn#",
+                "qu": "http://purl.oclc.org/NET/ssnx/qu/qu#",                
+                "opensense":"http://opensense.epfl.ch/onto/opensense#"}               
+              ],
+  "url": "lsd_small.csv",
+  "tableSchema": {
+    "columns": [{
+      "name": "time",
+      "titles": "Timestamp",
+      "aboutUrl": "Instant_{time}",
+      "propertyUrl": "time:inXSDDateTime",
+	  "datatype": {"base": "dateTime","format": "yyyy-MM-ddTHH:mm:ss" }
+    }, {
+      "name": "sensor",
+      "titles": "Bus sensor",
+      "aboutUrl": "Obs_NO2_{sensor}_{time}",
+      "propertyUrl": "ssn:observedBy",
+      "valueUrl": "Sensor_{sensor}"
+    }, {
+      "name": "obsProperty",
+      "virtual": true,
+      "aboutUrl": "Obs_NO2_{sensor}_{time}",
+      "propertyUrl": "ssn:observedProperty",
+      "valueUrl": "opensense:NO2"
+    }, {
+      "name": "obsResult",
+      "virtual": true,
+      "aboutUrl": "Obs_NO2_{sensor}_{time}",
+      "propertyUrl": "ssn:observationResult",
+      "valueUrl": "ObsResult_NO2_{sensor}_{time}"
+    }, {
+      "name": "obsTime",
+      "virtual": true,
+      "aboutUrl": "Obs_NO2_{sensor}_{time}",
+      "propertyUrl": "ssn:observationResultTime",
+      "valueUrl": "Instant_{time}"
+    }, {
+      "name": "no2",
+      "titles": "NO2 concentration",
+      "aboutUrl": "ObsResult_NO2_{sensor}_{time}",
+      "propertyUrl": "qu:numericalValue"
+    }, {
+      "name": "unit",
+      "virtual": true,
+      "aboutUrl": "ObsResult_NO2_{sensor}_{time}",
+      "propertyUrl": "qu:unit",
+      "valueUrl": "opensense:ppm"
+    }]
+  }
+}

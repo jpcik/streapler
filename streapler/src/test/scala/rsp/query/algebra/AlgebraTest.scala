@@ -20,6 +20,7 @@ import rsp.engine.JenaEvaluator
 class AlgebraTest extends FlatSpec with Matchers  {
   private val logger= LoggerFactory.getLogger(this.getClass)
   import rsp.query.algebra.Op._
+  import org.apache.jena.sparql.algebra.{Op=>JenaOp}
   
   "uri" should "be parsed" in{
     val uri=new URI("http://products")
@@ -35,13 +36,17 @@ class AlgebraTest extends FlatSpec with Matchers  {
      val pp=ModelFactory.createDefaultModel
      pp.add(ResourceFactory.createResource("http://papa.com/topo"),
         RDFS.label , ResourceFactory.createResource("http://popo.org/copo"))
+     pp.add(ResourceFactory.createResource("http://papa.com/topo"),
+        RDFS.comment, ResourceFactory.createPlainLiteral("3"))        
      import JenaAlgebra._
      val t=TriplePattern("papa","p","o")
-     val bgp=new BgpOp(Seq(t))
-     val jev=new JenaEvaluator(bgp)
+     val bgp=new BgpOp(Seq(t))     
+     val fil:JenaOp=FilterOp(BinaryXpr(OpEq,VarXpr("o"),ValueXpr("3")),bgp)
+     println(fil)
+     val jev=new JenaEvaluator(fil)
      
-     jev.evaluate(pp.getGraph)
-     
+     val qi=jev.evaluate(pp.getGraph)
+     qi.hasNext should be (true)
   }
 
 }

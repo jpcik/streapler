@@ -25,11 +25,16 @@ import java.nio.file.Paths
 import java.io.File
 import java.nio.file.StandardCopyOption
 import org.apache.spark.mllib.linalg.Vector
-import rsp.io.web.JsonWebFeed
 import rsp.io.rml.RmlEngine
 import rsp.io.web.JsonWebStream
 import rsp.query.algebra._
 import scala.language.postfixOps
+import rsp.io.web.RandomRdfStream
+import rsp.rspql.Rspql
+import rsp.rspql.syntax.ElementNamedWindowGraph
+import org.apache.jena.sparql.syntax.ElementGroup
+import org.apache.jena.sparql.syntax.Element
+import rsp.rspql.syntax.ElementTimeWindow
 
 object EvalTools{
   def str(recStr:String,ctx:StreamingContext)={
@@ -43,7 +48,7 @@ class Evaluator {
   val prefix="akka://sparkDriver/user/"
     
   val strContext={
-    val batchDuration=Seconds(1)
+    val batchDuration=Seconds(10)
     val conf=new SparkConf().setAppName("rspql").setMaster("local[*]")
     new StreamingContext(conf,batchDuration)    
   }
@@ -108,17 +113,50 @@ case class Bindings(values:Map[String,RdfTerm]){
 object Eval{
   
   def main(args:Array[String]):Unit={
+    
     trep
   }
 
   import JenaAlgebra._
     import JenaBindings._
     import rsp.query.algebra.Op._
-
+    import org.apache.jena.sparql.algebra.{Op=>JenaOp}
+    
+  def parseQuery()={
+    val qs= """PREFIX : <http://rsp.org/>
+      PREFIX ex: <http://example.com/ns#>
+      SELECT ?room 
+      FROM NAMED WINDOW :win ON :bikes [RANGE PT10S ]
+      WHERE { WINDOW :win { 
+        ?s ex:bikesAvailable ?bikes 
+        FILTER (?bikes=2) 
+      }}"""
+    
+    val q=Rspql.parse(qs)
+    
+  
+    q
+  }
+    def getWindow(e:Element):Element=e match {
+      case g:ElementGroup=>getWindow(g.getElements.head)
+      case w:ElementNamedWindowGraph=>w.element
+        
+    }
     val t=TriplePattern("papa","p","o")
       val bgp=new BgpOp(Seq(t))
-  val fil=FilterOp(BinaryXpr(OpEq,VarXpr("o"),ValueXpr("3")),bgp)
-     val jev=new JenaEvaluator(fil)
+      val fil:JenaOp=FilterOp(BinaryXpr(OpEq,VarXpr("o"),ValueXpr("8")),bgp)
+     val fs=fil.toString()
+     //val jev=new JenaEvaluator(fil)
+    val q=parseQuery
+    val el= getWindow(q.getQueryPattern)
+    
+    val win=q.streams("http://rsp.org/win")
+    val range=win.window.asInstanceOf[ElementTimeWindow].range.duration.toStandardSeconds()
+    
+    val op=Algebra.compile(el)
+    println(op)
+
+    val jev=new JenaEvaluator(op)
 
   def jevv(g:Graph)=jev.evaluate(g)
   
@@ -128,10 +166,10 @@ object Eval{
     val props=Map("sourceid"->"metropolradruhr-germany-dortmund")
     val json=new JsonWebStream(map.head,props)
     val ev=new Evaluator  
-    ev.addFeed(Props(new JsonWebFeed(json,2000)), "rspfeed")
+    ev.addFeed(Props(new PullFeed(json,5000)), "bikes")
     val rdd=ev.streams(0)
-
-    val trips=rdd.window(Seconds(2)).flatMap{g=>
+    val trips=rdd.window(Seconds(range.getSeconds)).flatMap{g=>
+      //println(g)
       val it=jevv(g)
       it.map(b2bind)toSeq
       
@@ -151,13 +189,14 @@ object Eval{
   def exec={
     import JenaAlgebra._
     import JenaBindings._
+    import RdfTools._
     import rsp.query.algebra.Op._
 
     val t=TriplePattern("papa","p","o")
     val bgp=new BgpOp(Seq(t))
     val jev=new JenaEvaluator(bgp)
     val ev=new Evaluator  
-    ev.addFeed(Props(new RandomRspFeed("dibi",10)), "rspfeed")
+    ev.addFeed(Props(new PullFeed(new RandomRdfStream("dibi"),10)), "rspfeed")
     //ev.addFeed(Props(new RandomRspFeed(10)), "rspfeed2")
     //ev.addFeed(Props(new RandomRspFeed(10)), "rspfeed3")
     val feed=SparkEnv.get.actorSystem.actorOf(Props[DataFeed],"data")
@@ -181,21 +220,22 @@ object Eval{
         
         //println("dime "+bb.values("o").getClass())
         val pip=bb.values("o").toString.toDouble
-        Vectors.dense(Array(pip))
+        
+        LabeledPoint(pip,Vectors.dense(Array(pip)))
       }.toSeq      
     }
   
     
     
     val mm=new StreamingKMeans()
-      .setK(4)
+      .setK(10)
       .setDecayFactor(1.0)     
       .setRandomCenters(1, 0.1,1)
    
     //mm.trainOn(train)
     
     //train.print
-    val bip=mm.predictOn(trips)
+    val bip=mm.predictOnValues(trips.map(lp=>(lp.label,lp.features)))
     bip.print(100)
     //trips.print(1)
     /*trips.count.foreachRDD{c=>

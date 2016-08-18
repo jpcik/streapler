@@ -1,0 +1,14 @@
+WindDirection,degrees
+WindSpeed,milesPerHour
+PeakWindSpeed,milesPerHour
+AirTemperature,fahrenheit
+SoilTemperature,fahrenheit
+WaterTemperature,fahrenheit
+Precipitation,centimeters
+PrecipitationAccumulated,centimeters
+PrecipitationSmoothed,centimeters
+RelativeHumidity,percent
+DewPoint,fahrenheit
+WindGust,milesPerHour
+Pressure,inches
+Visibility,centimeters

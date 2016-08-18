@@ -7,7 +7,7 @@ scalaVersion := "2.11.6"
 enablePlugins(JavaAppPackaging)
   
 libraryDependencies ++= Seq(
-  "org.apache.jena" % "apache-jena-libs" % "3.0.1",
+  "org.apache.jena" % "apache-jena-libs" % "3.1.0",
   "com.typesafe.slick" %% "slick" % "2.1.0",  
   "org.antlr" % "antlr" % "3.2",
   "org.semanticweb.hermit" % "HermiT" % "1.3.7.3" intransitive,

@@ -1,34 +1,31 @@
 package rsp.io.web
 
+import play.api.libs.concurrent._
+import play.api.libs.json._
 import play.api.libs.ws._
 import play.api.libs.ws.ning._
-import com.ning.http.client.AsyncHttpClientConfig
-import play.api.libs.json._
 import rsp.io.rml.RmlEngine
 import rsp.io.rml._
-import play.api.libs.concurrent._
 import rsp.data._
+import rsp.data.RdfTools._
+import rsp.data.Literal._
 import rsp.engine.RspFeed
+import com.ning.http.client.AsyncHttpClientConfig
+import org.joda.time.format.ISODateTimeFormat
 
 trait WebSource {
   def pullData:Any
 }
 
-class JsonWebFeed(stre:JsonWebStream,rate:Int) extends RspFeed(stre,rate){
-  def produce={
-    stre.data
-  }
-}
-
 class JsonWebStream(tmap:TriplesMap,props:Map[String,Any]) extends RdfStream {
-  //val uri="http://api.citybik.es/metropolradruhr-germany-dortmund.json"
   val uri= transform(Template(tmap.source.get.uri),props)
   override val name=Iri(uri)
- // "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"
-  val id="id"
-  val timestamp="time"//"timestamp"
+  var lastTimestamp:Long=0
+  var currentTimestamp=0l
+  val timestamp=tmap.source.get.timestamp.getOrElse("timestamp")
+  
+  
   implicit val context =Execution.Implicits.defaultContext
-  //import play.api.Play.current
   def wsClient={
     val clientConfig = new DefaultWSClientConfig()
     val secureDefaults = new NingAsyncHttpClientConfigBuilder(clientConfig).build()
@@ -43,50 +40,56 @@ class JsonWebStream(tmap:TriplesMap,props:Map[String,Any]) extends RdfStream {
   }
   
   def pullData={
-    //play.api.Play.current.    
     implicit val implicitClient = wsClient
-    import rsp.data.RdfTools._
-    import rsp.data.Literal._
-//println("before web call "+uri)
     val resp=WS.clientUrl(uri).get.map{response=>
-      val js=(response.json  ).as[JsArray]
-      //println(js)
-      val pip=(js).value.map{j=>
-        //println("j "+j)
-        val subjUri=transform(tmap.sMap.value,j)
-        //println("the subj "+subjUri)
-        Thread.sleep(200)
-        Graph(tmap.poMaps.map{po=>
-          //println("traba "+po.pMap )
-          val p=transform(po.pMap.value,j) 
-                //println("tigi"+p )
-                
-    val oo=
-      if (po.oMap.value==null){
-        transform(po.oMap.parentTriplesMap.get.sMap.value,j )
-      }
-      else
-      transform(po.oMap.value,j)
-          //println("rabab"+ oo)
-          Triple(subjUri,p,lit(oo))
-        }:_*)
-        //println("dib "+subjUri)
-      }
-      pip
+      val jsArray=tmap.source.get.dataPath.map{path=>      
+        (response.json \ path)}.getOrElse(response.json).as[JsArray]
+      jsArray.value.filter(isNew)
+      .map(json => mkTriples(json))
     }
     
-    resp.onComplete{a=>
-      
-      println("failed: "+a.isFailure)
-      //a.failed.get.printStackTrace()
-      implicitClient.close
-    
+    resp.onComplete{a=> 
+      lastTimestamp=currentTimestamp
+      println("failed: "+a.isFailure+" "+lastTimestamp)
+      if (a.isFailure)
+        a.failed.get.printStackTrace()
+      implicitClient.close    
     }
-
-    resp
-    
+    resp    
   }
 
+  def ts(js:JsValue)={
+    val dt=(js \\ "created_at").head.as[String]
+    val time=ISODateTimeFormat.dateTimeParser().parseDateTime(dt).getMillis
+
+    (js,time)
+  }
+  
+  def isNew(js:JsValue)={   
+    //println(js)
+    val dt=(js \\ timestamp).head.as[String]
+    //println(dt)
+    val time=ISODateTimeFormat.dateTimeParser().parseDateTime(dt).getMillis
+    //println(time+"-"+lastTimestamp)
+    if (time>currentTimestamp) 
+      currentTimestamp=time
+    time>lastTimestamp
+    
+  }
+  
+  def mkTriples(js:JsValue)={
+    val subjUri=transform(tmap.sMap.value,js).toString      
+    Graph(tmap.poMaps.map{po=>
+      val p=transform(po.pMap.value,js).toString                 
+      val oo=
+        if (po.oMap.value==null)
+          transform(po.oMap.parentTriplesMap.get.sMap.value,js)
+        else
+          transform(po.oMap.value,js)
+      Triple(subjUri,p,lit(oo)) 
+    }:_*)
+  }
+  
   def transform(template:Template,prop:Map[String,Any])={   
     var finalUri=template.template 
     template.vars foreach{v=>
@@ -95,10 +98,11 @@ class JsonWebStream(tmap:TriplesMap,props:Map[String,Any]) extends RdfStream {
     finalUri 
   }
   
-  def transform(map:MapValue,js:JsValue):String=map match {
-    case t:Template=>val tt=transform(t,js)
-    //println(tt)
-    tt
+  def transform(map:MapValue,js:JsValue):Any=map match {
+    case t:Template=>
+      val tt=transform(t,js)
+      //println(tt)
+      tt
     case r:Reference=>transform(r,js)
     case c:Constant=>transform(c)
     case _=>
@@ -121,29 +125,49 @@ class JsonWebStream(tmap:TriplesMap,props:Map[String,Any]) extends RdfStream {
           finalUri=finalUri.replace(s"{$v}",a.toString)    
       }              
     }
-    //println(finalUri)
     finalUri 
   }
 
-  def transform(ref:Reference,js:JsValue)={
-               
-      (js \ ref.ref ) match {
+  def transform(ref:Reference,js:JsValue):Any={               
+      (js \\ ref.ref ).head match {
         case u:JsUndefined=>
           null
+        case i:JsNumber=>
+          i.as[Long]
         case a:JsValue=>
-          a.toString    
+          a.toString
+          
       }              
   }
 
 }
 
 object Call{
-  def main(arr:Array[String]):Unit={
-    
+  
+  def bikesJson={
     val map=RmlEngine.readMappings("src/test/resources/citybikes.rml")
     val props=Map("sourceid"->"metropolradruhr-germany-dortmund")
-    val json=new JsonWebStream(map.head,props)
-    json.pullData
+    new JsonWebStream(map.head,props)
+  }
+   
+  def trendsJson={
+    val map=RmlEngine.readMappings("src/test/resources/trends.rml")
+    val props:Map[String,String]=Map()
+    new JsonWebStream(map.head,props)
+  }
+  
+  def main(arr:Array[String]):Unit={
+    import scala.concurrent.ExecutionContext.Implicits.global
+   val js=trendsJson
+    while (true){
+            
+      
+      //js.updateLast(23)
+      println("demonios "+js.lastTimestamp)
+      js.pullData.map { x => x.foreach { println } }
+    
+    Thread.sleep(10000)
+    }
   }
 }
 

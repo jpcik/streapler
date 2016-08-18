@@ -1,0 +1,25 @@
+:NO2VsensorBox a ssn:Sensor;
+       rdfs:label "NO2 Virtual Sensor Lausanne";
+       ssn:observes :NO2;
+       ssn:hasMeasurementCapability [
+          a ssn:Accuracy; 
+          ssn:forProperty :NO2;
+          ssn:inCondition ... ;
+          ssn:hasValue ... ] .  
+          
+:COVsensorBox a ssn:Sensor;
+       rdfs:label "CO Virtual Sensor Lausanne";
+       ssn:observes :CO;
+       
+       
+:COVSensorBoxSchema
+   csvw:column [csvw:name "co";
+                ssn:observedProperty :NO2 
+                csvw:datatype xsd:double];
+   csvw:column [csvw:name "comax"];
+   ssn:isProducedBy :COVsensorBox
+       
+:V34 a ssn:Sensor;
+    ssn:hasSubsystem :NO2VsensorBox;
+    ssn:hasSubsystem :COVsensorBox.
+    

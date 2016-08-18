@@ -34,7 +34,7 @@ class JenaEvaluator(q:JenaOp) {
   
   def evaluate(g:JenaGraph)={
     val it=Algebra.exec(q, g)
-    println("pipipin")
+    //println("pipipin")
     it
     /*while (it.hasNext()){
       val r=it.nextBinding()
@@ -65,6 +65,7 @@ object JenaAlgebra{
       //println(jBgp)
       jBgp
     case filter:FilterOp=>
+      println("transform")
       val fp= OpFilter.filter(jenaExpr(filter.xpr ),jena(filter.op))
       fp
   }
@@ -94,7 +95,7 @@ object JenaAlgebra{
     
     case iri:Iri=>jenaIri(iri)
     case varr:Var=>JenaVar.alloc(varr.name) 
-    case lit:Literal=>NodeFactory.createLiteral(lit.value.toString)
+    case lit:Literal=>NodeFactory.createLiteralByValue(lit.value,null)
     
   }
   

@@ -123,6 +123,8 @@ object RmlEngine {
     source.map{s=>
       val root=objBoolean(subj,Iri(Rml.iri+"root"))
       val cache=objBoolean(subj,Iri(Rml.iri+"cache"))
+      val dataPath=objString(subj,Iri(Rml.iri+"dataPath"))
+      val timestamp=objString(subj,Iri(Rml.iri+"timestamp"))
       val cached=cache.map{c=>
         Source.fromFile(source.get.toString).getLines.map{line=>
           val array=line.split(",")
@@ -130,7 +132,8 @@ object RmlEngine {
         }.toMap
       }
         
-      DataSource(s.toString,query,paramList,None,root.getOrElse(false),cached)      
+      DataSource(s.toString,query,paramList,None,dataPath,timestamp,
+          root.getOrElse(false),cached)      
     }
   }
   

@@ -12,7 +12,8 @@ object LiteralType extends TermType("Literal")
 case class Param(name:String,column:String,map:MapValue)
 
 case class DataSource(uri:String,query:Option[String],params:Seq[Param],
-    iterator:Option[String],isRoot:Boolean,cached:Option[Map[String,Array[String]]])
+    iterator:Option[String],dataPath:Option[String],timestamp:Option[String],
+    isRoot:Boolean,cached:Option[Map[String,Array[String]]])
 
 abstract class TermMap(val value:MapValue,val datatype:Option[RDFDatatype]){
 }

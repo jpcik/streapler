@@ -1,0 +1,56 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix rml: <http://semweb.mmlab.be/ns/rml#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix obs: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>.
+@prefix time: <http://www.w3.org/2006/time#>.
+@prefix : <http://epfl.ch/mapping/>.
+
+:UnitMap
+  rml:logicalSource [    
+    rml:source "src/test/resources/data/units.csv"; rml:cache true;
+    rml:referenceFormulation rml:CsvPath; ];  
+  rr:subjectMap [ 
+    rr:template "http://knoesis.wright.edu/ssw/ont/weather.owl#{1}"].
+  
+:MeasureDataMap
+  rr:subjectMap [ 
+    rr:template "http://knoesis.wright.edu/ssw/MeasureData_{2}_{1}_{0}"];
+  rr:predicateObjectMap [ 
+    rr:predicate rdf:type; rr:objectMap [ rr:constant obs:MeasureData]];
+  rr:predicateObjectMap [ 
+    rr:predicate obs:floatValue; rr:objectMap [ rml:reference "3"; rr:datatype xsd:float; rml:param "value";]];
+  rr:predicateObjectMap [ 
+    rr:predicate obs:uom; rr:objectMap [ rr:parentTriplesMap :UnitMap; rr:child "2"; rr:parent "0" ]].
+ 
+:ObservationMap  
+  rml:logicalSource [
+    rml:root true;
+    rml:shource "file:///Users/calbimon/git/streapler/streapler/src/test/resources/data/lsd_small.csv";
+    rml:source "file:///Users/calbimon/data/lsd/nevada.csv";
+    rml:referenceFormulation rml:CsvPath; ];  
+  rr:subjectMap [ 
+    rr:template "http://knoesis.wright.edu/ssw/Observation_{2}_{1}_{0}"];
+  rr:predicateObjectMap [ 
+    rr:predicate rdf:type; 
+    rr:objectMap [ rr:template "http://knoesis.wright.edu/ssw/ont/weather.owl#{2}Observation"]];
+  rr:predicateObjectMap [ 
+    rr:predicate obs:observedProperty; 
+    rr:objectMap [ rr:template "http://knoesis.wright.edu/ssw/ont/weather.owl#_{2}"]];
+  rr:predicateObjectMap [ 
+    rr:predicate obs:procedure; 
+    rr:objectMap [ rr:template "http://knoesis.wright.edu/ssw/System_{1}"]];
+  rr:predicateObjectMap [ 
+    rr:predicate obs:result; rr:objectMap [ rr:parentTriplesMap :MeasureDataMap]];
+  rr:predicateObjectMap [ 
+    rr:predicate obs:samplingTime; rr:objectMap [ rr:parentTriplesMap :InstantMap]].
+        
+:InstantMap
+  rr:subjectMap [ 
+    rr:template "http://knoesis.wright.edu/ssw/Instant_{0}"];
+  rr:predicateObjectMap [ 
+    rr:predicate rdf:type; rr:objectMap [ rr:constant time:Instant]];
+  rr:predicateObjectMap [ 
+    rr:predicate time:inXSDDateTime; rr:objectMap [ rml:reference "0"; rr:datatype xsd:dateTime]].
+ 

@@ -12,7 +12,7 @@
   rml:logicalSource [
     rml:source "http://api.citybik.es/{sourceid}.json";
     rml:referenceFormulation ql:JSONPath;
-    rml:iterator "$" ];
+    rml:iterator "$";    rml:root true; ];
 
   rr:subjectMap [ 
      rr:template "http://bikes.org/{sourceid}/station/{id}_{timestamp}"];

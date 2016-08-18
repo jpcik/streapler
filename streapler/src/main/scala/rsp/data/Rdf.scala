@@ -64,7 +64,6 @@ object Graph{
   def apply(triples:Triple*):Graph=Graph(None,triples.toSet)
 }
 
-
 object RdfTools{
   //implicit def str2lit(s:String)=Literal(s,null,null)
   implicit def str2iri(s:String)=Iri(s)
