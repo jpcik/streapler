@@ -2,7 +2,7 @@
 name := "rspql"
 organization := "rsp"
 version := "0.0.1"
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.8"
 
 //enablePlugins(JavaAppPackaging)
   

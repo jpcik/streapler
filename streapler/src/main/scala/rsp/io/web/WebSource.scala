@@ -30,7 +30,7 @@ class JsonWebStream(tmap:TriplesMap,props:Map[String,Any]) extends RdfStream {
     val clientConfig = new DefaultWSClientConfig()
     val secureDefaults = new NingAsyncHttpClientConfigBuilder(clientConfig).build()
     val builder = new AsyncHttpClientConfig.Builder(secureDefaults)
-    builder.setCompressionEnabled(true)
+    builder.setCompressionEnforced(true)
     val secureDefaultsWithSpecificOptions = builder.build()
     new NingWSClient(secureDefaultsWithSpecificOptions)    
   }

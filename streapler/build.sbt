@@ -2,7 +2,7 @@
 name := "streapler"
 organization := "rsp"
 version := "0.0.1"
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.8"
 
 enablePlugins(JavaAppPackaging)
   
@@ -18,6 +18,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-ws" % "2.3.8",  
   "eu.trowl" % "trowl-core" % "1.4",
   "rsp" %% "cqels" % "1.1.0",
+  "org.jfarcand" % "wcs" % "1.5",  
   "com.eed3si9n" %% "treehugger" % "0.4.1",
   "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",  
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",

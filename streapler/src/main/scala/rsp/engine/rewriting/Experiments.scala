@@ -12,8 +12,8 @@ import concurrent.duration._
 import akka.actor.actorRef2Scala
 import rsp.vocab.SSN
 import rsp.engine.cqels.SsnStream
-import rsp.engine.cqels.StartStream
-import rsp.engine.cqels.StopStream
+import rsp.engine.StartStream
+import rsp.engine.StopStream
 
 object Experiments extends CommonPrefixes{
   import language.reflectiveCalls

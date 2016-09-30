@@ -6,8 +6,9 @@ import rsp.data.{Triple=>RspTriple}
 import com.typesafe.config.Config
 import collection.JavaConversions._
 import rsp.engine.RspReasoner
+import rsp.engine.RateRspStream
 
-class SsnStream(cqels:RspReasoner,uri:String,conf:Config) extends RspStream(cqels,uri,conf){
+class SsnStream(cqels:RspReasoner,uri:String,conf:Config) extends RateRspStream(cqels,uri,conf){
   val met="http://purl.org/env/meteo#"
   val obs="http://purl.org/env/sensing/"
   val aws="http://purl.oclc.org/NET/ssnx/meteo/aws#"
