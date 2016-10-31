@@ -33,7 +33,7 @@
   rml:logicalSource [
     rml:root true;
     rml:source "jdbc coso"; 
-    rr:tableName "lsd"; 
+    rml:query "select * from sensordata"; 
     sr:queryParams :Params ];  
   rr:subjectMap [ 
     rr:template "http://knoesis.wright.edu/ssw/Observation_{observed}_{sensor}_{time}"];

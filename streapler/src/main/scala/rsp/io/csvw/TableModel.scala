@@ -16,7 +16,7 @@ case class Column(name:String,titles:Array[String],virtual:Boolean=false,
 case class TableContext(language:String,base:String,
     prefix:Map[String,String])
   
-case class Table(url:String,columns:Seq[Column],ctx:TableContext){
+case class Table(url:String,id:String,columns:Seq[Column],ctx:TableContext){
   val csvColumnNameIdx=
     columns.filterNot(_.virtual).map(_.name).zipWithIndex.toMap
   

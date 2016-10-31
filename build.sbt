@@ -2,9 +2,7 @@
 name := "streapler-root"
 organization := "rsp"
 //version := "0.0.1"
-scalaVersion := "2.11.6"
-
-//enablePlugins(JavaAppPackaging)
+scalaVersion := "2.11.8"
   
 lazy val rspql = (project in file("rspql"))
 

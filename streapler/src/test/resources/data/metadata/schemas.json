@@ -1,0 +1,46 @@
+{
+  "@context": "http://www.w3.org/ns/csvw",
+  "tables": [
+   {"url": "http://example.org/lsd.csv",
+    "id": "lsd",
+    "tableSchema": {
+      "columns": [
+        {"name": "time",    "datatype": "dateTime"}, 
+        {"name": "sensor",  "datatype": "string"}, 
+        {"name": "property","datatype": "string"}, 
+        {"name": "value",   "datatype": "double" }],
+      "primaryKey": ["dateTime","sensor","property"]
+   },
+   {"url": "http://example.org/social.csv",
+    "id": "social",
+    "tableSchema": {
+      "columns": [
+        {"name": "time",    "datatype": "dateTime"}, 
+        {"name": "person",  "datatype": "string"}, 
+        {"name": "room",    "datatype": "string"}  ], 
+      "primaryKey": ["dateTime","person"]
+    }
+   },
+   {"url": "http://example.org/country_slice.csv",
+    "tableSchema": {
+      "columns": [{
+        "name": "countryRef",
+        "valueUrl": "http://example.org/countries.csv{#countryRef}",
+        "datatype" : "string"
+      }, {
+        "name": "year",
+        "datatype": "integer"
+      }, {
+        "name": "population",
+        "datatype": "integer"
+      }],
+      "foreignKeys": [{
+        "columnReference": "countryRef",
+        "reference": {
+          "resource": "http://example.org/countries.csv",
+          "columnReference": "countryCode"
+        }
+      }]
+    }
+  }]
+}

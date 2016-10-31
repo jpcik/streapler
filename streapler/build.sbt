@@ -20,7 +20,8 @@ libraryDependencies ++= Seq(
   "rsp" %% "cqels" % "1.1.0",
   "org.jfarcand" % "wcs" % "1.5",  
   "com.eed3si9n" %% "treehugger" % "0.4.1",
-  "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",  
+  "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
+  "com.espertech" % "esper" % "5.5.0",  
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "junit" % "junit" % "4.12" % "test"
 )

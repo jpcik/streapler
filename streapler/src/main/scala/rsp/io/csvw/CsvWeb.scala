@@ -10,19 +10,46 @@ import play.api.libs.json.JsObject
 import java.net.URI
 import org.apache.commons.httpclient.util.URIUtil
 import java.net.URLEncoder
+import play.api.libs.json.JsValue
 
 object CsvWeb {
   def readMetadata(csvwFile:String)={
     
     val json=Json.parse(Source.fromFile(csvwFile).getLines.mkString(" "))
-    val imports=(json \ "@context").as[JsArray].value(1).as[JsObject]
+    val ct=(json \ "@context")
+    val imports=ct.asOpt[JsArray] map {
+        v=>v.value(1).as[JsObject]       
+    }
+    val lang=imports.map(i=>(i \ "@language").as[String]).getOrElse("und")
+    val base=imports.map(i=>(i \ "base").as[String]).getOrElse(csvwFile)
     
-    val pref=imports.keys.filter(k =>k!="@language" && k!="base")
-      .map { k => k->(imports \ k).as[String]}.toMap
-    val ctx=TableContext((imports \ "@language").as[String],
-        (imports \ "base").as[String],pref)
+    val pref=imports.map{i=>
+      i.keys.filter(k =>k!="@language" && k!="base")
+       .map { k => k->(i \ k).as[String]}.toMap
+    }
+    val ctx=TableContext(lang,base,pref.getOrElse(Map()))
     
-    val cols=(json \\ "columns").head.as[JsArray]
+    val tables=(json \ "tables").asOpt[JsArray]
+    
+    if (tables.isDefined){
+      tables.get.value.map{table=>
+        parseTable(table,ctx)
+      }
+    }
+    else Seq(parseTable(json,ctx))
+       
+    //val m=RDFDataMgr.loadModel(csvwFile,Lang.JSONLD)
+    //m.listStatements.size
+  }
+  
+  def parseTable(tableJson:JsValue,ctx:TableContext)={
+    
+    def parseDatatype(dt:Option[String])=dt.map(Datatype("",_))
+    
+    val url=(tableJson \ "url").as[String]
+    val id=(tableJson \ "id").asOpt[String].getOrElse(url)
+    val schema=tableJson \ "tableSchema"
+    val cols=(schema \ "columns").as[JsArray]
     val columns=cols.value.map{col=>
       Column(
         (col \ "name").as[String],
@@ -31,15 +58,14 @@ object CsvWeb {
         (col \ "aboutUrl").asOpt[String],
         (col \ "propertyUrl").asOpt[String],
         (col \ "valueUrl").asOpt[String],
-        None)
+        parseDatatype((col \ "datatype").asOpt[String]))
     }
-    Table(csvwFile,columns,ctx)
-    //val m=RDFDataMgr.loadModel(csvwFile,Lang.JSONLD)
-    //m.listStatements.size
+    Table(url,id,columns,ctx)
   }
   
   def generateRdf(csvFile:String,csvwFile:String)={
-    val table=readMetadata(csvwFile)
+    val tables=readMetadata(csvwFile)
+    tables.foreach { table =>
     Source.fromFile(csvFile).getLines.foreach{line=>
       val data=line.split(",")
       var i=0
@@ -59,6 +85,7 @@ object CsvWeb {
       }
       
 
+    }
     }
   }
 }
