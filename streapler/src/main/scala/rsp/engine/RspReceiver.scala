@@ -1,12 +1,12 @@
 package rsp.engine
 
 import akka.actor._
-import org.apache.spark.streaming.receiver.ActorHelper
 import rsp.data._
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.streaming.akka.ActorReceiver
 
-class RspReceiver(feed:String) extends Actor with ActorHelper{
+class RspReceiver(feed:String) extends ActorReceiver{
   var count=0
   private var feeder:ActorSelection=null
   override def preStart()={

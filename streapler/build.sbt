@@ -13,9 +13,11 @@ libraryDependencies ++= Seq(
   "org.semanticweb.hermit" % "HermiT" % "1.3.7.3" intransitive,
   "net.sourceforge.owlapi" % "owlapi-api" % "3.4.4" intransitive,
   "net.sourceforge.owlapi" % "owlapi-apibinding" % "3.4.4",
-  "org.apache.spark" % "spark-streaming_2.11" % "1.4.1",
-  "org.apache.spark" % "spark-mllib_2.11" % "1.4.1",
-  "com.typesafe.play" %% "play-ws" % "2.3.8",  
+  "com.typesafe.akka" %% "akka-stream" % "2.4.2",
+  "org.apache.spark" % "spark-streaming_2.11" % "2.0.1",
+  "org.apache.spark" % "spark-mllib_2.11" % "2.0.1",
+  "org.apache.bahir" %% "spark-streaming-akka" % "2.0.1",
+  "com.typesafe.play" %% "play-ws" % "2.4.8",  
   "eu.trowl" % "trowl-core" % "1.4",
   "rsp" %% "cqels" % "1.1.0",
   "org.jfarcand" % "wcs" % "1.5",  
@@ -24,6 +26,10 @@ libraryDependencies ++= Seq(
   "com.espertech" % "esper" % "5.5.0",  
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "junit" % "junit" % "4.12" % "test"
+)
+
+dependencyOverrides ++= Set(
+  "com.fasterxml.jackson.core" % "jackson-databind" % "2.4.4"
 )
 
 resolvers ++= Seq(

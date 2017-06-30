@@ -6,7 +6,6 @@ import org.apache.spark.streaming.Seconds
 import akka.actor._
 import concurrent.duration._
 import scala.util.Random
-import org.apache.spark.streaming.receiver.ActorHelper
 import org.apache.spark.SparkEnv
 import scala.collection.mutable.ArrayBuffer
 import rsp.query.algebra.Op
@@ -35,11 +34,12 @@ import rsp.rspql.syntax.ElementNamedWindowGraph
 import org.apache.jena.sparql.syntax.ElementGroup
 import org.apache.jena.sparql.syntax.Element
 import rsp.rspql.syntax.ElementTimeWindow
+import org.apache.spark.streaming.akka.AkkaUtils
 
 object EvalTools{
   def str(recStr:String,ctx:StreamingContext)={
     val recProps=Props(new RspReceiver(recStr))
-    val stream=ctx.actorStream[Graph](recProps,"rspfeed"+"Stream")
+    val stream=AkkaUtils.createStream[Graph](ctx,recProps,"rspfeed"+"Stream")
     stream
   }
 }
@@ -55,15 +55,15 @@ class Evaluator {
   
   
   
-  private lazy val sys=SparkEnv.get.actorSystem
+  //private lazy val sys=SparkEnv.get.actorSystem
   val streams=new ArrayBuffer[ReceiverInputDStream[Graph]]
   val feeds=new ArrayBuffer[ActorRef]
 
-  def actor(props:Props)=sys.actorOf(props)
+  //def actor(props:Props)=sys.actorOf(props)
 
   def addFeed(props:Props,name:String)={
-    val feed=sys.actorOf(props,name)
-    feeds+=feed
+    //val feed=sys.actorOf(props,name)
+    //feeds+=feed
     val stream=EvalTools.str(prefix+name, strContext)
     streams += stream
   }
@@ -199,7 +199,7 @@ object Eval{
     ev.addFeed(Props(new PullFeed(new RandomRdfStream("dibi"),10)), "rspfeed")
     //ev.addFeed(Props(new RandomRspFeed(10)), "rspfeed2")
     //ev.addFeed(Props(new RandomRspFeed(10)), "rspfeed3")
-    val feed=SparkEnv.get.actorSystem.actorOf(Props[DataFeed],"data")
+    //val feed=SparkEnv.get.actorSystem.actorOf(Props[DataFeed],"data")
     //val gt=ev.actor(Props[Getter])
     
     /*val rdd2=ev.streams(1)
@@ -244,7 +244,7 @@ object Eval{
     }*/
     //rdd2.print(1)
     //rdd3.print(1)
-           feed ! Init
+    //       feed ! Init
 
      //ctx.start()             // Start the computation
      //ctx.awaitTermination()

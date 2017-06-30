@@ -81,7 +81,7 @@ object EngineDemo{
     val win=TimeWindow(Period.millis(10000))
     val qa=QueryAlgebra(bgp,win)
     e.registerQuery(qa)
-    //e.register(st)
+    e.register(st)
     //e.register(st1)        
     
   }

@@ -27,12 +27,17 @@ class JsonWebStream(tmap:TriplesMap,props:Map[String,Any]) extends RdfStream {
   
   implicit val context =Execution.Implicits.defaultContext
   def wsClient={
-    val clientConfig = new DefaultWSClientConfig()
-    val secureDefaults = new NingAsyncHttpClientConfigBuilder(clientConfig).build()
-    val builder = new AsyncHttpClientConfig.Builder(secureDefaults)
-    builder.setCompressionEnforced(true)
-    val secureDefaultsWithSpecificOptions = builder.build()
-    new NingWSClient(secureDefaultsWithSpecificOptions)    
+    val sslClient = NingWSClient()
+// close with sslClient.close() when finished with client
+//val response = WS.clientUrl(url).get()
+
+   // val clientConfig = new defaultws DefaultWSClientConfig()
+    //val secureDefaults = new NingAsyncHttpClientConfigBuilder(clientConfig).build()
+    //val builder = new AsyncHttpClientConfig.Builder(secureDefaults)
+    //builder.setCompressionEnforced(true)
+    //val secureDefaultsWithSpecificOptions = builder.build()
+    //new NingWSClient(secureDefaultsWithSpecificOptions)
+    sslClient
   }
   
   def data={
@@ -118,11 +123,11 @@ class JsonWebStream(tmap:TriplesMap,props:Map[String,Any]) extends RdfStream {
   def transform(template:Template,js:JsValue)={
     var finalUri=template.template 
     template.vars foreach{v=>      
-      (js \ v) match {
-        case u:JsUndefined=>
+      (js \ v).toOption match {
+        case None=>
           finalUri=finalUri.replace(s"{$v}",props(v).toString)
-        case a:JsValue=>
-          finalUri=finalUri.replace(s"{$v}",a.toString)    
+        case a:Some[JsValue]=>
+          finalUri=finalUri.replace(s"{$v}",a.get.toString)    
       }              
     }
     finalUri 
@@ -130,8 +135,8 @@ class JsonWebStream(tmap:TriplesMap,props:Map[String,Any]) extends RdfStream {
 
   def transform(ref:Reference,js:JsValue):Any={               
       (js \\ ref.ref ).head match {
-        case u:JsUndefined=>
-          null
+        //case undefinned=>
+        //  null
         case i:JsNumber=>
           i.as[Long]
         case a:JsValue=>
