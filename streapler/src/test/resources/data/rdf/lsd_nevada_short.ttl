@@ -1,0 +1,59 @@
+@prefix om-owl:  <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sens-obs:  <http://knoesis.wright.edu/ssw/> .
+@prefix owl-time:  <http://www.w3.org/2006/time#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix weather:  <http://knoesis.wright.edu/ssw/ont/weather.owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+sens-obs:Observation_AirTemperature_4UT01_2003_3_31_22_15_00
+      a       weather:TemperatureObservation ;
+      om-owl:observedProperty weather:_AirTemperature ;
+      om-owl:procedure sens-obs:System_4UT01 ;
+      om-owl:result sens-obs:MeasureData_AirTemperature_4UT01_2003_3_31_22_15_00 ;
+      om-owl:samplingTime sens-obs:Instant_2003_3_31_22_15_00 .
+
+sens-obs:Observation_AirTemperature_4UT01_2003_3_31_6_55_00
+      a       weather:TemperatureObservation ;
+      om-owl:observedProperty weather:_AirTemperature ;
+      om-owl:procedure sens-obs:System_4UT01 ;
+      om-owl:result sens-obs:MeasureData_AirTemperature_4UT01_2003_3_31_6_55_00 ;
+      om-owl:samplingTime sens-obs:Instant_2003_3_31_6_55_00 .
+
+sens-obs:Observation_RelativeHumidity_4UT01_2003_3_31_6_40_00
+      a       weather:WindSpeedObservation ;
+      om-owl:observedProperty weather:_WindGust ;
+      om-owl:procedure sens-obs:System_4UT01 ;
+      om-owl:result sens-obs:MeasureData_RelativeHumidity_4UT01_2003_3_31_6_40_00 ;
+      om-owl:samplingTime sens-obs:Instant_2003_3_31_6_40_00 .
+
+sens-obs:Observation_WindSpeed_4UT01_2003_3_31_17_25_00
+      a       weather:WindSpeedObservation ;
+      om-owl:observedProperty weather:_WindSpeed ;
+      om-owl:procedure sens-obs:System_4UT01 ;
+      om-owl:result sens-obs:MeasureData_WindSpeed_4UT01_2003_3_31_17_25_00 ;
+      om-owl:samplingTime sens-obs:Instant_2003_3_31_17_25_00 .
+
+
+sens-obs:MeasureData_AirTemperature_4UT01_2003_3_31_22_15_00
+      a       om-owl:MeasureData ;
+      om-owl:floatValue "56.0"^^xsd:float ;
+      om-owl:uom weather:fahrenheit .
+
+
+sens-obs:MeasureData_AirTemperature_4UT01_2003_3_31_6_55_00
+      a       om-owl:MeasureData ;
+      om-owl:floatValue "48.0"^^xsd:float ;
+      om-owl:uom weather:fahrenheit .
+
+
+sens-obs:MeasureData_RelativeHumidity_4UT01_2003_3_31_6_40_00
+      a       om-owl:MeasureData ;
+      om-owl:floatValue "36.0"^^xsd:float ;
+      om-owl:uom weather:percent .
+
+sens-obs:MeasureData_WindSpeed_4UT01_2003_3_31_17_25_00
+      a       om-owl:MeasureData ;
+      om-owl:floatValue "13.0"^^xsd:float ;
+      om-owl:uom weather:milesPerHour .
